@@ -5,20 +5,69 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Label
+ CartesianGrid,
+  Tooltip
 } from "recharts";
 
 function App() {
   const [data, setData] = useState(null);
 
+  
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/analyze")
-      .then(res => setData(res.data))
-      .catch(err => console.error(err));
-  }, []);
+  const demoData = {
+    raw_data: [
+      "Severe headache after taking metformin",
+      "Metformin is causing dizziness and weakness",
+      "I feel dizzy after metformin",
+      "Paracetamol is not reducing my fever",
+      "Paracetamol not working at all",
+      "Severe headache after metformin again",
+      "Feeling weak and dizzy after metformin",
+      "Paracetamol failed to reduce fever"
+    ],
+
+    extracted: [
+      {
+        text: "Severe headache after taking metformin",
+        drug: "metformin",
+        symptom: "headache"
+      },
+      {
+        text: "Metformin is causing dizziness and weakness",
+        drug: "metformin",
+        symptom: "dizziness"
+      },
+      {
+        text: "Paracetamol is not reducing my fever",
+        drug: "paracetamol",
+        symptom: "fever"
+      }
+    ],
+
+    alerts: [
+      {
+        drug: "metformin",
+        symptom: "headache",
+        count: 2,
+        severity: "High",
+        confidence: 0.9,
+        trend: "Increasing",
+        source: "Reddit"
+      },
+      {
+        drug: "paracetamol",
+        symptom: "fever",
+        count: 2,
+        severity: "Medium",
+        confidence: 0.7,
+        trend: "Stable",
+        source: "Forums"
+      }
+    ]
+  };
+
+  setData(demoData);
+}, []);
 
   if (!data)
     return (
