@@ -5,8 +5,9 @@ import {
   Line,
   XAxis,
   YAxis,
- CartesianGrid,
-  Tooltip
+  CartesianGrid,
+  Tooltip,
+  Label
 } from "recharts";
 
 function App() {
