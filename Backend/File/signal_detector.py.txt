@@ -1,0 +1,39 @@
+from collections import defaultdict
+
+SEVERITY_WORDS = ["severe", "worst", "extreme"]
+
+def detect_signals(extracted_data):
+    counts = defaultdict(int)
+    severity_score = defaultdict(int)
+
+    for item in extracted_data:
+        key = (item["drug"], item["symptom"])
+
+        if None in key:
+            continue
+
+        counts[key] += 1
+
+        for word in SEVERITY_WORDS:
+            if word in item["text"]:
+                severity_score[key] += 1
+
+    alerts = []
+
+    for key, count in counts.items():
+        if count >= 2:
+            drug, symptom = key
+
+            severity = "High" if severity_score[key] > 1 else "Medium"
+
+            confidence = round(min(1.0, 0.5 + count * 0.1), 2)
+
+            alerts.append({
+                "drug": drug,
+                "symptom": symptom,
+                "count": count,
+                "severity": severity,
+                "confidence": confidence
+            })
+
+    return alerts

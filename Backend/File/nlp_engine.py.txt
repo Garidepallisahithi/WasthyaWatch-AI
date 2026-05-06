@@ -1,0 +1,25 @@
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
+
+DRUGS = ["metformin", "paracetamol"]
+SYMPTOMS = ["headache", "dizziness", "fever", "weakness"]
+
+def extract_entities(text):
+    text = text.lower()
+    drug = None
+    symptom = None
+
+    for d in DRUGS:
+        if d in text:
+            drug = d
+
+    for s in SYMPTOMS:
+        if s in text:
+            symptom = s
+
+    return {
+        "text": text,
+        "drug": drug,
+        "symptom": symptom
+    }

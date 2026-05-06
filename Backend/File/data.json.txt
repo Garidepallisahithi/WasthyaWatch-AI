@@ -1,0 +1,10 @@
+[
+  "Severe headache after taking metformin",
+  "Metformin is causing dizziness and weakness",
+  "I feel dizzy after metformin",
+  "Paracetamol is not reducing my fever",
+  "Paracetamol not working at all",
+  "Severe headache after metformin again",
+  "Feeling weak and dizzy after metformin",
+  "Paracetamol failed to reduce fever"
+]
