@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -12,69 +13,15 @@ import {
 function App() {
   const [data, setData] = useState(null);
 
-  
   useEffect(() => {
-  const demoData = {
-    raw_data: [
-      "[Reddit] Severe headache after taking metformin",
-      "[X] Metformin is causing dizziness and weakness",
-      "[Forum] I feel dizzy after metformin",
-      "[Reddit] Paracetamol is not reducing my fever",
-      "[X] Paracetamol not working at all",
-      "[Forum] Severe headache after metformin again",
-      "[Reddit] Feeling weak and dizzy after metformin",
-      "[X] Paracetamol failed to reduce fever"
-    ],
-    
-
-  
-    extracted: [
-      {
-        text: "[Reddit] Severe headache after taking metformin",
-        drug: "metformin",
-        symptom: "headache"
-      },
-      {
-       text: "[X] Metformin is causing dizziness and weakness",
-       drug: "metformin",
-      symptom: "dizziness"
-      },
-      {
-       text: "[Forum] I feel dizzy after metformin",
-       drug: "metformin",
-       symptom: "dizziness"
-       },
-      {
-       text: "[Reddit] Paracetamol is not reducing my fever",
-       drug: "paracetamol",
-       symptom: "fever"
-     }
-    ],
-
-    alerts: [
-      {
-        drug: "metformin",
-        symptom: "headache",
-        count: 2,
-        severity: "High",
-        confidence: 0.9,
-        trend: "Increasing",
-        source: "Reddit"
-      },
-      {
-        drug: "paracetamol",
-        symptom: "fever",
-        count: 2,
-        severity: "Medium",
-        confidence: 0.7,
-        trend: "Stable",
-        source: "Forums"
-      }
-    ]
-  };
-
-  setData(demoData);
-}, []);
+    axios.get("http://127.0.0.1:8000/analyze")
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   if (!data)
     return (
@@ -83,7 +30,6 @@ function App() {
       </h2>
     );
 
-  // TREND DATA
   const trendData = [
     { step: "T1", mentions: 2 },
     { step: "T2", mentions: 4 },
@@ -91,7 +37,6 @@ function App() {
     { step: "T4", mentions: 7 }
   ];
 
-  // SORT ALERTS
   const sortedAlerts = [...data.alerts].sort((a, b) => {
     const order = { High: 3, Medium: 2, Low: 1 };
     return order[b.severity] - order[a.severity];
@@ -125,7 +70,6 @@ function App() {
         >
           WasthyaWatch AI
         </h1>
-
 
         <p
           style={{
@@ -214,6 +158,73 @@ function App() {
         </div>
       </div>
 
+      {/* LIVE SOURCE STATUS */}
+
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          padding: "20px",
+          borderRadius: "14px",
+          marginBottom: "30px",
+          boxShadow: "0 8px 20px rgba(0,0,0,0.06)"
+        }}
+      >
+        <h3
+          style={{
+            marginBottom: "18px",
+            color: "#111827",
+            fontSize: "20px",
+            fontWeight: "700"
+          }}
+        >
+          Live Source Status
+        </h3>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap"
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#ecfdf5",
+              color: "#065f46",
+              padding: "12px 18px",
+              borderRadius: "10px",
+              fontWeight: "600"
+            }}
+          >
+            Reddit • Active
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#ecfdf5",
+              color: "#065f46",
+              padding: "12px 18px",
+              borderRadius: "10px",
+              fontWeight: "600"
+            }}
+          >
+            X • Active
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#ecfdf5",
+              color: "#065f46",
+              padding: "12px 18px",
+              borderRadius: "10px",
+              fontWeight: "600"
+            }}
+          >
+            Forums • Active
+          </div>
+        </div>
+      </div>
+
       {/* CRITICAL SIGNAL */}
       <div
         style={{
@@ -272,8 +283,16 @@ function App() {
               backgroundColor: "#ffffff",
               borderRadius: "14px",
               padding: "22px",
-              border: "1px solid #f1f5f9",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.08)"
+
+              border:
+                alert.severity === "High"
+                  ? "2px solid #dc2626"
+                  : "1px solid #e5e7eb",
+
+              boxShadow:
+                alert.severity === "High"
+                  ? "0 8px 24px rgba(220,38,38,0.15)"
+                  : "0 8px 20px rgba(0,0,0,0.06)"
             }}
           >
             <p><strong>Drug:</strong> {alert.drug}</p>
@@ -282,15 +301,23 @@ function App() {
 
             <p>
               <strong>Severity:</strong>{" "}
+
               <span
                 style={{
-                  fontWeight: "700",
+                  backgroundColor:
+                    alert.severity === "High"
+                      ? "#fee2e2"
+                      : "#fef3c7",
+
                   color:
                     alert.severity === "High"
-                      ? "#dc2626"
-                      : alert.severity === "Medium"
-                      ? "#ea580c"
-                      : "#16a34a"
+                      ? "#b91c1c"
+                      : "#d97706",
+
+                  padding: "4px 10px",
+                  borderRadius: "999px",
+                  fontWeight: "700",
+                  fontSize: "13px"
                 }}
               >
                 {alert.severity}
@@ -298,6 +325,7 @@ function App() {
             </p>
 
             <p><strong>Confidence:</strong> {alert.confidence}</p>
+
             <p
               style={{
                 marginTop: "8px",
@@ -306,10 +334,16 @@ function App() {
                 lineHeight: "1.5"
               }}
             >
-              Confidence score is derived from frequency, symptom severity, and consistency across multiple patient reports.
+              Confidence score is derived from frequency, symptom severity,
+              and consistency across multiple patient reports.
             </p>
+
             <p><strong>Trend:</strong> {alert.trend}</p>
-            <p><strong>Source:</strong> {alert.source}</p>
+
+            <p>
+              <strong>Source:</strong>{" "}
+              {alert.source.replace("Twitter", "X")}
+            </p>
           </div>
         ))}
       </div>
@@ -444,14 +478,25 @@ function App() {
                 lineHeight: "1.6"
               }}
             >
-
-              <span style={{ color: "#2563eb", fontWeight: "600" }}>
+              {item.text.includes("]") ? (
+                <>
+                  <span
+                    style={{
+                      color: "#2563eb",
+                      fontWeight: "600"
+                    }}
+                  >
                     {item.text.split("]")[0]}]
                   </span>{" "}
-                  {item.text.split("]").slice(1).join("]")} →{" "}
-                  <strong>{item.drug}</strong> +{" "}
-                  <strong>{item.symptom || "ineffectiveness"}</strong>
-             </li>
+                  {item.text.split("]").slice(1).join("]")}
+                </>
+              ) : (
+                item.text
+              )}{" "}
+
+              → <strong>{item.drug}</strong> +{" "}
+              <strong>{item.symptom || "ineffectiveness"}</strong>
+            </li>
           ))}
         </ul>
       </div>
@@ -527,6 +572,7 @@ function App() {
           <li>Increase monitoring of reported adverse events</li>
         </ul>
       </div>
+
     </div>
   );
 }

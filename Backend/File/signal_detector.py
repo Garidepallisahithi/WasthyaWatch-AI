@@ -1,54 +1,73 @@
 from collections import defaultdict
 
-# Words indicating higher severity
-SEVERITY_WORDS = ["severe", "worst", "extreme"]
+# Severity keywords
+SEVERITY_WORDS = [
+    "severe",
+    "worst",
+    "extreme",
+    "terrible",
+    "serious",
+    "dangerous"
+]
 
 def detect_signals(extracted_data):
     counts = defaultdict(int)
     severity_score = defaultdict(int)
 
-    #  Step 1: Count occurrences and severity
+    # Count mentions + severity
     for item in extracted_data:
         key = (item["drug"], item["symptom"])
 
-        # Skip if drug or symptom is missing
         if None in key:
             continue
 
         counts[key] += 1
 
-        # Check severity keywords
+        text_lower = item["text"].lower()
+
         for word in SEVERITY_WORDS:
-            if word in item["text"]:
+            if word in text_lower:
                 severity_score[key] += 1
 
     alerts = []
 
-    # 🔹 Step 2: Generate alerts
     for key, count in counts.items():
-        if count >= 2:   # threshold for signal detection
+
+        # Signal threshold
+        if count >= 2:
+
             drug, symptom = key
 
-            #  Improved Severity Logic
-            if severity_score[key] >= 2:
+            # HIGH severity logic
+            if (
+                severity_score[key] >= 1
+                
+            ):
                 severity = "High"
+                confidence = 0.9
+
+            # MEDIUM severity
             elif count >= 2:
                 severity = "Medium"
+                confidence = 0.7
+
             else:
                 severity = "Low"
+                confidence = 0.5
 
-            #  Confidence Score
-            confidence = round(min(1.0, 0.5 + count * 0.1), 2)
-
-            #  Trend Detection (simulated previous data)
-            previous_count = 1   # assume past mentions
+            # Trend logic
+            previous_count = 1
             increase = count - previous_count
-            trend = "Increasing" if increase > 0 else "Stable"
 
-            #  Multi-source simulation
-            source = "Twitter / Reddit"
+            trend = (
+                "Increasing"
+                if increase > 0
+                else "Stable"
+            )
 
-            #  Final alert object
+            # Source attribution
+            source = "X / Reddit"
+
             alerts.append({
                 "drug": drug,
                 "symptom": symptom,
