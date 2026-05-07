@@ -14,7 +14,8 @@ function App() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/analyze")
+    
+    axios.get("https://wasthyawatch-ai.onrender.com/analyze")
       .then((res) => {
         setData(res.data);
       })
