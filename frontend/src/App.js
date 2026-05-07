@@ -16,32 +16,39 @@ function App() {
   useEffect(() => {
   const demoData = {
     raw_data: [
-      "Severe headache after taking metformin",
-      "Metformin is causing dizziness and weakness",
-      "I feel dizzy after metformin",
-      "Paracetamol is not reducing my fever",
-      "Paracetamol not working at all",
-      "Severe headache after metformin again",
-      "Feeling weak and dizzy after metformin",
-      "Paracetamol failed to reduce fever"
+      "[Reddit] Severe headache after taking metformin",
+      "[X] Metformin is causing dizziness and weakness",
+      "[Forum] I feel dizzy after metformin",
+      "[Reddit] Paracetamol is not reducing my fever",
+      "[X] Paracetamol not working at all",
+      "[Forum] Severe headache after metformin again",
+      "[Reddit] Feeling weak and dizzy after metformin",
+      "[X] Paracetamol failed to reduce fever"
     ],
+    
 
+  
     extracted: [
       {
-        text: "Severe headache after taking metformin",
+        text: "[Reddit] Severe headache after taking metformin",
         drug: "metformin",
         symptom: "headache"
       },
       {
-        text: "Metformin is causing dizziness and weakness",
-        drug: "metformin",
-        symptom: "dizziness"
+       text: "[X] Metformin is causing dizziness and weakness",
+       drug: "metformin",
+      symptom: "dizziness"
       },
       {
-        text: "Paracetamol is not reducing my fever",
-        drug: "paracetamol",
-        symptom: "fever"
-      }
+       text: "[Forum] I feel dizzy after metformin",
+       drug: "metformin",
+       symptom: "dizziness"
+       },
+      {
+       text: "[Reddit] Paracetamol is not reducing my fever",
+       drug: "paracetamol",
+       symptom: "fever"
+     }
     ],
 
     alerts: [
@@ -437,9 +444,14 @@ function App() {
                 lineHeight: "1.6"
               }}
             >
-              {item.text} → <strong>{item.drug}</strong> +{" "}
-              <strong>{item.symptom || "ineffectiveness"}</strong>
-            </li>
+
+              <span style={{ color: "#2563eb", fontWeight: "600" }}>
+                    {item.text.split("]")[0]}]
+                  </span>{" "}
+                  {item.text.split("]").slice(1).join("]")} →{" "}
+                  <strong>{item.drug}</strong> +{" "}
+                  <strong>{item.symptom || "ineffectiveness"}</strong>
+             </li>
           ))}
         </ul>
       </div>
