@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-praw
 requests
 spacy
 python-multipart
