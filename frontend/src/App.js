@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
+  ResponsiveContainer,
   LineChart,
   Line,
   XAxis,
@@ -14,8 +15,8 @@ function App() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    
-    axios.get("https://wasthyawatch-ai.onrender.com/analyze")
+    axios
+      .get("https://wasthyawatch-ai.onrender.com/analyze")
       .then((res) => {
         setData(res.data);
       })
@@ -49,10 +50,9 @@ function App() {
         fontFamily: "'Inter', sans-serif",
         backgroundColor: "#f3f4f6",
         minHeight: "100vh",
-        padding: "30px"
+        padding: "20px"
       }}
     >
-
       {/* HEADER */}
       <div
         style={{
@@ -104,6 +104,7 @@ function App() {
         <div
           style={{
             flex: "1",
+            minWidth: "220px",
             backgroundColor: "#ffffff",
             padding: "18px",
             borderRadius: "14px",
@@ -123,6 +124,7 @@ function App() {
         <div
           style={{
             flex: "1",
+            minWidth: "220px",
             backgroundColor: "#ffffff",
             padding: "18px",
             borderRadius: "14px",
@@ -142,6 +144,7 @@ function App() {
         <div
           style={{
             flex: "1",
+            minWidth: "220px",
             backgroundColor: "#ffffff",
             padding: "18px",
             borderRadius: "14px",
@@ -160,7 +163,6 @@ function App() {
       </div>
 
       {/* LIVE SOURCE STATUS */}
-
       <div
         style={{
           backgroundColor: "#ffffff",
@@ -284,12 +286,10 @@ function App() {
               backgroundColor: "#ffffff",
               borderRadius: "14px",
               padding: "22px",
-
               border:
                 alert.severity === "High"
                   ? "2px solid #dc2626"
                   : "1px solid #e5e7eb",
-
               boxShadow:
                 alert.severity === "High"
                   ? "0 8px 24px rgba(220,38,38,0.15)"
@@ -302,19 +302,16 @@ function App() {
 
             <p>
               <strong>Severity:</strong>{" "}
-
               <span
                 style={{
                   backgroundColor:
                     alert.severity === "High"
                       ? "#fee2e2"
                       : "#fef3c7",
-
                   color:
                     alert.severity === "High"
                       ? "#b91c1c"
                       : "#d97706",
-
                   padding: "4px 10px",
                   borderRadius: "999px",
                   fontWeight: "700",
@@ -379,7 +376,8 @@ function App() {
           padding: "18px",
           boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
           border: "1px solid #f1f5f9",
-          width: "700px",
+          width: "100%",
+          maxWidth: "700px",
           margin: "0 auto"
         }}
       >
@@ -394,60 +392,65 @@ function App() {
           Trend showing cumulative increase in patient-reported safety signals.
         </p>
 
-        <LineChart
-          width={650}
-          height={260}
-          data={trendData}
-          margin={{
-            top: 20,
-            right: 30,
-            left: 40,
-            bottom: 40
-          }}
-        >
-          <CartesianGrid
-            stroke="#e5e7eb"
-            strokeDasharray="4 4"
-          />
-
-          <XAxis
-            dataKey="step"
-            tick={{ fontSize: 14 }}
-          >
-            <Label
-              value="Monitoring Timeline"
-              position="bottom"
-              offset={15}
-              style={{
-                fontSize: 14,
-                fill: "#4b5563"
+        <div style={{ width: "100%", height: "280px" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={trendData}
+              margin={{
+                top: 20,
+                right: 20,
+                left: 10,
+                bottom: 40
               }}
-            />
-          </XAxis>
+            >
+              <CartesianGrid
+                stroke="#e5e7eb"
+                strokeDasharray="4 4"
+              />
 
-          <YAxis tick={{ fontSize: 14 }} domain={[0, 8]}>
-            <Label
-              value="Reported Mentions"
-              angle={-90}
-              position="insideLeft"
-              style={{
-                textAnchor: "middle",
-                fontSize: 14,
-                fill: "#4b5563"
-              }}
-            />
-          </YAxis>
+              <XAxis
+                dataKey="step"
+                tick={{ fontSize: 12 }}
+              >
+                <Label
+                  value="Monitoring Timeline"
+                  position="bottom"
+                  offset={15}
+                  style={{
+                    fontSize: 12,
+                    fill: "#4b5563"
+                  }}
+                />
+              </XAxis>
 
-          <Tooltip />
+              <YAxis
+                tick={{ fontSize: 12 }}
+                domain={[0, 8]}
+              >
+                <Label
+                  value="Reported Mentions"
+                  angle={-90}
+                  position="insideLeft"
+                  style={{
+                    textAnchor: "middle",
+                    fontSize: 12,
+                    fill: "#4b5563"
+                  }}
+                />
+              </YAxis>
 
-          <Line
-            type="monotone"
-            dataKey="mentions"
-            stroke="#dc2626"
-            strokeWidth={3}
-            dot={{ r: 5 }}
-          />
-        </LineChart>
+              <Tooltip />
+
+              <Line
+                type="monotone"
+                dataKey="mentions"
+                stroke="#dc2626"
+                strokeWidth={3}
+                dot={{ r: 5 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* EXTRACTED INSIGHTS */}
@@ -494,7 +497,6 @@ function App() {
               ) : (
                 item.text
               )}{" "}
-
               → <strong>{item.drug}</strong> +{" "}
               <strong>{item.symptom || "ineffectiveness"}</strong>
             </li>
@@ -573,7 +575,6 @@ function App() {
           <li>Increase monitoring of reported adverse events</li>
         </ul>
       </div>
-
     </div>
   );
 }
